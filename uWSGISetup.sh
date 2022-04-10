@@ -3,28 +3,30 @@
 ###################################################################################
 #
 # Как видно по всем этим командам, тут устанавливается uwsgi-сервер и всё прочее, 
-# но ничего не мешает остановиться после пятой строчки и запустить всё на тестовом 
+# но ничего не мешает просто загрузить файл .py и запустить всё на тестовом 
 # сервере командой 'python3 /root/ytpserver.py', предварительно поправив внутри 
-# ip и порт, закрыть виртуалку и уйти по своим делам.
+# app.run, ip и порт, закрыть виртуалку и уйти по своим делам.
+#
+# As you can see from all these commands, a uwsgi server is being installed here,
+# but nothing holds you from just downloading the .py file and running it on the 
+# test server with 'python3 /root/ytpserver.py' command, having previously corrected
+# app.run, ip and port inside, then close the virtual machine and move along.
 #
 ###################################################################################
 
 read -p "Enter domain name for your proxy (like this: youtube.proxy.com): " domainName
 read -p "Enter email for certbot notifications: " certbotMail
 
-echo "creatind directories..."
-cd /root
-mkdir ytp
-cd ytp
-mkdir templates
-
-echo "installing binaries for python and uWSGI..."
+echo "installing binaries for unzipping, python and uWSGI..."
 apt -yq update
-apt -yq install wget build-essential python3-dev python3-pip 
-pip3 -q install uwsgi flask
+apt -yq install wget build-essential python3-dev python3-pip install uwsgi flask
 
 echo "downloading project from git..."
-wget ''
+cd /root
+wget 'https://github.com/kirovreporting/ytp/archive/refs/heads/master.zip'
+unzip master.zip
+mv ytp-master ytp
+cd ytp
 
 echo "creating uWSGI config file..."
 cat << EOF > uwsgi.ini
