@@ -14,7 +14,12 @@
 #
 ###################################################################################
 
-read -p "Enter domain name for your proxy (like this: youtube.proxy.com): " domainName
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+read -p "Enter domain name for your proxy (like this: my.youtubeproxydomain.com): " domainName
 read -p "Enter email for certbot notifications: " certbotMail
 
 echo "installing binaries for unzipping, python and uWSGI..."
