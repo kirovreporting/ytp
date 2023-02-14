@@ -19,18 +19,23 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-read -p "Enter domain name for your proxy (like this: my.youtubeproxydomain.com): " domainName
+read -p "Enter domain name for your proxy (like this: youtube.proxy.com): " domainName
 read -p "Enter email for certbot notifications: " certbotMail
 
+echo "updating repos..."
+apt -yqq update > /var/log/youtubeproxy.install.log 2>&1
 echo "installing binaries for unzipping, python and uWSGI..."
-apt -yq update
-apt -yq install wget build-essential python3-dev python3-pip install uwsgi flask
+apt -yqq install wget unzip build-essential python3-dev python3-pip > /var/log/youtubeproxy.install.log 2>&1
+echo "installing Flask..."
+pip install uwsgi > /var/log/youtubeproxy.install.log 2>&1
+echo "installing uWSGI..."
+pip install flask > /var/log/youtubeproxy.install.log 2>&1
 
 echo "downloading project from git..."
 cd /root
-wget 'https://github.com/kirovreporting/ytp/archive/refs/heads/master.zip'
-unzip master.zip
-mv ytp-master ytp
+wget 'https://github.com/kirovreporting/ytp/archive/refs/heads/master.zip' > /var/log/youtubeproxy.install.log 2>&1
+unzip master.zip > /var/log/youtubeproxy.install.log 2>&1
+mv ytp-master ytp > /var/log/youtubeproxy.install.log 2>&1
 cd ytp
 
 echo "creating uWSGI config file..."
@@ -91,10 +96,10 @@ echo "starting nginx..."
 systemctl restart nginx
 
 echo "installing certbot..."
-apt -yq install certbot python3-certbot-nginx
+apt -yqq install certbot python3-certbot-nginx > /var/log/youtubeproxy.install.log 2>&1
 
 echo "issuing certs..."
-certbot --nginx -d $domainName --non-interactive --agree-tos -m $certbotMail
+certbot --nginx -d $domainName --non-interactive --agree-tos -m $certbotMail > /var/log/youtubeproxy.install.log 2>&1
 
 echo "done. bye!"
 exit 0
